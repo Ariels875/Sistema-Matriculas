@@ -16,7 +16,7 @@
             <option value="docente">Docente</option>
         </select>
 
-        <label for="usuario">Usuario:</label>
+        <label for="usuario">Cedula:</label>
         <input type="text" name="usuario" id="usuario" required>
 
         <label for="contrasena">Contraseña:</label>

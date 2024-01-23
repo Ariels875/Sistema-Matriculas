@@ -1,7 +1,13 @@
+<?php
+session_start();
 
-
-
-
+// Verificar si la sesión está iniciada y si el rol es estudiante
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'estudiante') {
+    // Si no hay sesión o el rol no es estudiante, redirigir al formulario de inicio de sesión
+    header("Location: ../index.php");
+    exit();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -14,11 +20,17 @@
 <body>
     <h1>Menú Principal</h1>
 
-    <button onclick="location.href='matricularse.php'">Matricularse</button>
-    <button onclick="location.href='carrera_periodo.php'">Darse de baja</button>
-    <button onclick="location.href='asignaturas_aulas.php'">Horario</button>
-    <button onclick="location.href='docente.php'">Pagos</button>
+    <div class="menu-buttons">
+        <button onclick="location.href='matricularse.php'">Matricularse</button>
+        <button onclick="location.href='carrera_periodo.php'">Darse de baja</button>
+        <button onclick="location.href='asignaturas_aulas.php'">Horario</button>
+        <button onclick="location.href='pagos.php'">Pagos</button>
+    </div>
+
     <br></br>
-    <button onclick="location.href='../index.php'">Salir</button>
+
+    <form action="../login/logout.php" method="post">
+        <button type="submit" name="logout">Cerrar sesión</button>
+    </form>
 </body>
 </html>

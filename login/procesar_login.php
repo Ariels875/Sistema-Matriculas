@@ -4,6 +4,9 @@
 use App\Controladores\ValidarCredenciales;
 require("../vendor/autoload.php");
 
+// Iniciar o reanudar la sesión
+session_start();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger los valores del formulario
     $rol = $_POST["rol"];
@@ -23,9 +26,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Redireccionamiento basado en el resultado de autenticación
     if ($credencialesValidas) {
         if ($rol === "docente") {
+            $_SESSION['rol'] = 'docente';
+            $_SESSION['usuario'] = $usuario;
             header("Location: ../docente/menuDocente.php");
             exit();
         } elseif ($rol === "estudiante") {
+            $_SESSION['rol'] = 'estudiante';
+            $_SESSION['usuario'] = $usuario;
             header("Location: ../estudiante/menuEstudiante.php");
             exit();
         }
