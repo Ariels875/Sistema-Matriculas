@@ -1,0 +1,21 @@
+{
+    "name": "ascas/php-sistema",
+    "description": "Sistema de matriculas con interfaz php",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ariel",
+            "email": "ascastro875@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Database\\": "database/",
+            "App\\": "app/"
+        }
+    },
+
+    "require": {}
+    
+}

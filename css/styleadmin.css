@@ -1,0 +1,31 @@
+body {
+    background-color: #1a1a1a; /* Fondo oscuro */
+    color: #fff; /* Texto en blanco */
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #00ffff; /* Color cyan para el título */
+}
+
+button {
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: #fff; /* Texto en blanco */
+    padding: 15px 20px;
+    font-size: 16px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* Efecto de brillo */
+
+    /* Transición suave para el efecto hover */
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049; /* Cambio de color en hover */
+}
