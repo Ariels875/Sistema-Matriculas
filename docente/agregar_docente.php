@@ -7,201 +7,190 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'docente') {
     header("Location: ../index.php");
     exit();
 }
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
+    // Destruir la sesión
+    session_destroy();
+    
+    // Redirigir al usuario
+    header("Location: ../index.php");
+    exit();
+}
 
-// Incluir el controlador y crear una instancia
+// Incluir el controlador y crear una instancia, pilas cristian 
 use App\Controladores\DocenteController;
 require("../vendor/autoload.php");
 $docenteController = new DocenteController();
 
 // Inicializar variables
 $resultados = array();
-$mensajeExito = ''; // Agregado para evitar el error de "Undefined variable"
-$mensajeError = ''; // Agregado para evitar el error de "Undefined variable"
+$mensajeExito = '';
+$mensajeError = '';
 
-// Procesar el formulario cuando se envía
+// Procesar el formulario cuando se envía, esto fue dificil de hacer
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validar y obtener los datos del formulario
-    if (isset($_POST['busqueda'])) {
-        $busqueda = $_POST['busqueda'];
-        $resultados = $docenteController->buscarDocente($busqueda);
-    } elseif (
-        isset($_POST["input1"]) && isset($_POST["input2"]) && isset($_POST["input3"])
-        && isset($_POST["input4"]) && isset($_POST["input5"]) && isset($_POST["input6"])
-        && isset($_POST["input7"]) && isset($_POST["input8"])
-    ) {
-        // Recoger los valores de los inputs en variables PHP
-        $input1 = $_POST["input1"];
-        $input2 = $_POST["input2"];
-        $input3 = $_POST["input3"];
-        $input4 = $_POST["input4"];
-        $input5 = $_POST["input5"];
-        $input6 = $_POST["input6"];
-        $input7 = $_POST["input7"];
-        $input8 = $_POST["input8"];
+    $form_type = isset($_POST['form_type']) ? $_POST['form_type'] : '';
 
-        // Crear instancia del controlador y almacenar los datos
-        $controlEstudiante = new DocenteController();
-        $controlEstudiante->store([
-            "cedula" => $input1,
-            "primer_nombre" => $input2,
-            "primer_apellido" => $input3,
-            "fecha_nacimiento" => $input4,
-            "telefono_celular" => $input5,
-            "correo" => $input6,
-            "direccion_domicilio" => $input7,
-            "passwordd" => $input8
-        ]);
+    switch ($form_type) {
+        case 'buscarDocente':
+            if (isset($_POST['busqueda'])) {
+                $busqueda = $_POST['busqueda'];
+                $resultados = $docenteController->buscarDocente($busqueda);
+            }
+            break;
 
-        $mensajeExito = "Datos enviados correctamente.";
-    } else {
-        $mensajeError = "Por favor, complete todos los campos del formulario.";
+        case 'agregarDocente':
+            if (
+                isset($_POST["input1"]) && isset($_POST["input2"]) && isset($_POST["input3"])
+                && isset($_POST["input4"]) && isset($_POST["input5"]) && isset($_POST["input6"])
+                && isset($_POST["input7"]) && isset($_POST["input8"])
+            ) {
+                $input1 = $_POST["input1"];
+                $input2 = $_POST["input2"];
+                $input3 = $_POST["input3"];
+                $input4 = $_POST["input4"];
+                $input5 = $_POST["input5"];
+                $input6 = $_POST["input6"];
+                $input7 = $_POST["input7"];
+                $input8 = $_POST["input8"];
+
+                $docenteController->store([
+                    "cedula" => $input1,
+                    "primer_nombre" => $input2,
+                    "primer_apellido" => $input3,
+                    "fecha_nacimiento" => $input4,
+                    "telefono_celular" => $input5,
+                    "correo" => $input6,
+                    "direccion_domicilio" => $input7,
+                    "passwordd" => $input8
+                ]);
+
+                $mensajeExito = "Datos enviados correctamente.";
+            } else {
+                $mensajeError = "Por favor, complete todos los campos del formulario.";
+            }
+            break;
+
+            case 'eliminarDocente':
+                if (isset($_POST['cedula_eliminar'])) {
+                    $cedula_eliminar = $_POST['cedula_eliminar'];
+                    $docenteController->destroy($cedula_eliminar);
+                    $mensajeExito = "Docente eliminado correctamente.";
+                } else {
+                    $mensajeError = "Por favor, proporciona la cédula del docente que deseas eliminar.";
+                }
+            break;
+
+        default:
+            // Manejar cualquier otro caso xd
+            break;
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar o Eliminar Docente</title>
+    <title>Panel de Control Docente</title>
     <link rel="stylesheet" href="../css/styleadmin.css" />
+    <link rel="stylesheet" href="../css/styletable.css" />
+    <!--<link rel="stylesheet" href="../css/styleforms.css" Esto aun no funciona:(  />-->
 </head>
 <body>
-    <h1>Buscar Docente</h1>
 
-    <!-- Formulario para buscar docentes -->
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <label for="busqueda">Buscar por Cédula o Nombre:</label>
-        <input type="text" id="busqueda" name="busqueda" required>
-        <button type="submit">Buscar Docente</button>
-    </form>
+    <div id="content">
+        <h1>Panel de Control Docente</h1>
 
-    <?php if (!empty($resultados)) : ?>
-        <!-- Mostrar resultados en una tabla -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Cédula</th>
-                    <th>Primer Nombre</th>
-                    <th>Primer Apellido</th>
-                    <th>Fecha Nacimiento</th>
-                    <th>Teléfono Celular</th>
-                    <th>Correo</th>
-                    <th>Dirección Domicilio</th>
-                    <!-- Agregar más columnas según sea necesario -->
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($resultados as $docente) : ?>
-                    <tr>
-                    <td><?php echo isset($docente['idDocente']) ? $docente['idDocente'] : ''; ?></td>
-                    <td><?php echo isset($docente['cedula']) ? $docente['cedula'] : ''; ?></td>
-                    <td><?php echo isset($docente['primer_nombre']) ? $docente['primer_nombre'] : ''; ?></td>
-                    <td><?php echo isset($docente['primer_apellido']) ? $docente['primer_apellido'] : ''; ?></td>
-                    <td><?php echo isset($docente['fecha_nacimiento']) ? $docente['fecha_nacimiento'] : ''; ?></td>
-                    <td><?php echo isset($docente['telefono_celular']) ? $docente['telefono_celular'] : ''; ?></td>
-                    <td><?php echo isset($docente['correo']) ? $docente['correo'] : ''; ?></td>
-                    <td><?php echo isset($docente['direccion_domicilio']) ? $docente['direccion_domicilio'] : ''; ?></td>
-                    <!-- Agregar más columnas según sea necesario -->
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
+        <!-- Mostrar mensajes de éxito o error -->
+        <?php
+        if (!empty($mensajeExito)) {
+            echo '<div class="alert success">' . $mensajeExito . '</div>';
+        } elseif (!empty($mensajeError)) {
+            echo '<div class="alert error">' . $mensajeError . '</div>';
+        }
+        ?>
 
-    <br></br>
+        <!-- Formulario para agregar docente -->
+        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+            <input type="hidden" name="form_type" value="agregarDocente">
 
+            <div class="form-column">
+                <label for="input1">Cédula:</label>
+                <input type="text" id="input1" name="input1" required><br><br>
 
+                <label for="input2">Primer Nombre:</label>
+                <input type="text" id="input2" name="input2" required><br><br>
 
-    <h1>Gestión de Docentes</h1>
+                <label for="input3">Apellido:</label>
+                <input type="text" name="input3" id="input3" required><br><br>
 
-<!-- Formulario para agregar docente -->
-<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-    <h2>Agregar Docente</h2>
-    <!-- Agregar campos del formulario según sea necesario -->
-    <label for="input1">Cédula:</label>
-    <input type="text" id="input1" name="input1" required><br><br>
+                <label for="input4">Fecha de Nacimiento:</label>
+                <input type="date" name="input4" id="input4" required><br><br>
 
-    <label for="input2">Primer Nombre:</label>
-    <input type="text" id="input2" name="input2" required><br><br>
-    <label for="input3">Apellido:</label>
-    <input type="text" name="input3" id="input3" required><br><br>
+            </div>
+            <div class="form-column">
+                <label for="input5">Número celular:</label>
+                <input type="text" name="input5" id="input5" required><br><br>
 
-    <label for="input4">Fecha de Nacimiento:</label>
-    <input type="date" name="input4" id="input4" required><br><br>
+                <label for="input6">Correo:</label>
+                <input type="text" name="input6" id="input6" required><br><br>
 
-    <label for="input5">Numero celular:</label>
-    <input type="text" name="input5" id="input5" required><br><br>
+                <label for="input7">Dirección:</label>
+                <input type="text" name="input7" id="input7" required><br><br>
 
-    <label for="input6">Correo:</label>
-    <input type="text" name="input6" id="input6" required><br><br>
+                <label for="input8">Contraseña:</label>
+                <input type="password" name="input8" id="input8" required><br><br>
+            </div>
+            <button type="submit">Agregar Docente</button>
+        </form>
 
-    <label for="input7">Direccion:</label>
-    <input type="text" name="input7" id="input7" required><br><br>
+        <!-- Formulario para eliminar docente -->
+        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+            <input type="hidden" name="form_type" value="eliminarDocente">
 
-    <label for="input8">Contraseña:</label>
-    <input type="password" name="input8" id="input8" required><br><br>
+            <label for="cedula_eliminar">Cédula del Docente a Eliminar:</label>
+            <input type="text" name="cedula_eliminar" id="cedula_eliminar" required>
+            <button type="submit">Eliminar Docente</button>
+        </form>
 
-    <!-- Agregar más campos según sea necesario -->
+        <!-- Formulario para buscar docente -->
+        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+            <input type="hidden" name="form_type" value="buscarDocente">
 
-    <button type="submit" name="agregarDocente">Agregar Docente</button>
-</form>
+            <label for="busqueda">Buscar Docente:</label>
+            <input type="text" name="busqueda" id="busqueda" required>
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+ <!-- Muestra los resultados de la búsqueda -->
+ <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && $form_type === 'buscarDocente') {
+        // Solo muestra los resultados si se ha enviado el formulario de búsqueda
+        if (!empty($resultados)) {
+            echo '<h2>Resultados de la búsqueda:</h2>';
+            echo '<table>';
+            echo '<tr><th>Cédula</th><th>Nombre</th><th>Apellido</th><th>Fecha de Nacimiento</th><th>Correo</th><th>Direccion</th></tr>';
+            
+            foreach ($resultados as $docente) {
+                echo '<tr>';
+                echo '<td>' . htmlspecialchars($docente['cedula']) . '</td>';
+                echo '<td>' . htmlspecialchars($docente['primer_nombre']) . '</td>';
+                echo '<td>' . htmlspecialchars($docente['primer_apellido']) . '</td>';
+                echo '<td>' . htmlspecialchars($docente['fecha_nacimiento']) . '</td>';
+                echo '<td>' . htmlspecialchars($docente['correo']) . '</td>';
+                echo '<td>' . htmlspecialchars($docente['direccion_domicilio']) . '</td>';
+                echo '</tr>';
+            }
 
-<!-- Formulario para eliminar docente -->
-<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-    <h2>Eliminar Docente</h2>
-    <label for="cedula_eliminar">Cédula del Docente a Eliminar:</label>
-    <input type="text" id="cedula_eliminar" name="cedula_eliminar" required>
-
-    <button type="submit" name="eliminarDocente">Eliminar Docente</button>
-</form>
-
-<?php if (!empty($listaDocentes)) : ?>
-    <!-- Mostrar la lista de docentes en una tabla -->
-    <h2>Listado de Docentes</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Cédula</th>
-                <th>Primer Nombre</th>
-                <th>Primer Apellido</th>
-                <th>Fecha Nacimiento</th>
-                <th>Teléfono Celular</th>
-                <th>Correo</th>
-                <th>Dirección Domicilio</th>
-                <!-- Agregar más columnas según sea necesario -->
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($listaDocentes as $docente) : ?>
-                <tr>
-                    <td><?php echo $docente['cedula']; ?></td>
-                    <td><?php echo $docente['primer_nombre']; ?></td>
-                    <td><?php echo $docente['primer_apellido']; ?></td>
-                    <td><?php echo $docente['fecha_nacimiento']; ?></td>
-                    <td><?php echo $docente['telefono_celular']; ?></td>
-                    <td><?php echo $docente['correo']; ?></td>
-                    <td><?php echo $docente['direccion_domicilio']; ?></td>
-                    <!-- Agregar más columnas según sea necesario -->
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endif; ?>
-
-<!-- Mostrar mensajes de éxito o error -->
-<?php if ($mensajeExito !== '') : ?>
-    <p style="color: green;"><?php echo $mensajeExito; ?></p>
-<?php endif; ?>
-
-<?php if ($mensajeError !== '') : ?>
-    <p style="color: red;"><?php echo $mensajeError; ?></p>
-<?php endif; ?>
-
-<br></br>
-<button onclick="location.href='menuDocente.php'">Volver al Menú Docente</button>
+            echo '</table>';
+        } else {
+            echo '<p>No se encontraron resultados.</p>';
+        }
+    }
+    ?>
+        <button onclick="location.href='menuDocente.php'">Volver al Menú Docente</button>
+        <form action="#" method="post">
+            <button type="submit" name="logout">Cerrar sesión</button>
+        </form>
 </body>
 </html>
-

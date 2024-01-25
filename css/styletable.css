@@ -1,0 +1,45 @@
+/* Estilo para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2E2047; /* Fondo morado oscuro tendiendo a negro */
+    border-radius: 10px; /* Bordes redondeados */
+    overflow: hidden; /* Para que los bordes redondeados funcionen correctamente */
+    margin-top: 20px; /* Espaciado superior */
+}
+
+/* Estilo para las celdas de la tabla */
+table td, table th {
+    padding: 15px;
+    text-align: left;
+    color: #17A2B8; /* Color azul */
+    text-shadow: 0 0 10px #17A2B8; /* Efecto de sombra para el texto */
+}
+
+/* Estilo para el título de la tabla */
+table th {
+    background-color: #1D142D; /* Fondo morado oscuro para el encabezado */
+}
+
+/* Estilo para el mensaje de "No se encontraron resultados" */
+p {
+    color: #17A2B8; /* Color azul */
+    text-shadow: 0 0 10px #17A2B8; /* Efecto de sombra para el texto */
+}
+
+/* Estilo para la alerta de éxito o error */
+.alert {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.success {
+    background-color: #28A745; /* Verde para éxito */
+    color: #FFF;
+}
+
+.error {
+    background-color: #DC3545; /* Rojo para error */
+    color: #FFF;
+}

@@ -71,7 +71,7 @@ class EstudianteController{
         $stmt->bindValue(":correo", $data["correo"]);
         $stmt->bindValue(":direccion_domicilio", $data["direccion_domicilio"]);
         $stmt->bindValue(":passwordd", $data["passwordd"]);
-        $stmt->bindValue(":idDocentes", $data["idDocentes"]);
+        $stmt->bindValue(":idEstudiante", $data["idEstudiante"]);
 
 
         $stmt->execute();
@@ -82,5 +82,20 @@ class EstudianteController{
         $stmt->execute([":cedula"=> $cedula]);
 
     }
+    public function buscarEstudiante($busqueda) {
+        $stmt = $this->connection->prepare("SELECT * FROM estudiante 
+                                      WHERE cedula LIKE :busqueda OR 
+                                            primer_nombre LIKE :busqueda OR 
+                                            primer_apellido LIKE :busqueda");
+
+        $busquedaParam = '%' . $busqueda . '%';
+        $stmt->bindValue(":busqueda", $busquedaParam);
+        $stmt->execute();
+
+        $resultados = $stmt->fetchAll();
+
+        return $resultados;
+    }
+    
 
 }

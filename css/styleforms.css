@@ -1,0 +1,51 @@
+body {
+    background-color: #1a1a1a;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    color: #00ffff;
+}
+
+.form-container {
+    max-width: 800px; /* Ancho máximo del formulario */
+    margin: 0 auto; /* Centrar el formulario en la página */
+    display: flex;
+    justify-content: space-between; /* Distribuir los elementos en el contenedor */
+}
+
+.form-column {
+    width: 45%; /* Ancho de cada columna */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #00ffff;
+}
+
+input,
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}

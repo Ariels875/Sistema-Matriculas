@@ -24,12 +24,13 @@ class DocenteController{
         // Puedes implementar esta función si necesitas cargar una vista para crear un docente
     }
 
+
     public function store($data) {
-
         $stmt = $this->connection->prepare("INSERT INTO docentes (cedula, primer_nombre, primer_apellido,
-         fecha_nacimiento, telefono_celular, correo, direccion_domicilio) VALUES(:cedula,
-          :primer_nombre, :primer_apellido, :fecha_nacimiento, :telefono_celular, :correo, :direccion_domicilio);");
-
+            fecha_nacimiento, telefono_celular, correo, direccion_domicilio, passwordd) 
+            VALUES(:cedula, :primer_nombre, :primer_apellido, :fecha_nacimiento, 
+            :telefono_celular, :correo, :direccion_domicilio, :passwordd);");
+    
         $stmt->bindValue(":cedula", $data["cedula"]);
         $stmt->bindValue(":primer_nombre", $data["primer_nombre"]);
         $stmt->bindValue(":primer_apellido", $data["primer_apellido"]);
@@ -38,10 +39,10 @@ class DocenteController{
         $stmt->bindValue(":correo", $data["correo"]);
         $stmt->bindValue(":direccion_domicilio", $data["direccion_domicilio"]);
         $stmt->bindValue(":passwordd", $data["passwordd"]);
-
+    
         $stmt->execute();
     }
-
+    
     public function show($usuario) {
         $stmt = $this->connection->prepare("SELECT * FROM docentes WHERE cedula = :usuario");
         $stmt->bindValue(":usuario", $usuario);
@@ -49,7 +50,21 @@ class DocenteController{
         $infodocente = $stmt->fetch();
         return $infodocente;
     }
+    public function buscarDocente($busqueda) {
+        $stmt = $this->connection->prepare("SELECT * FROM docentes 
+                                      WHERE cedula LIKE :busqueda OR 
+                                            primer_nombre LIKE :busqueda OR 
+                                            primer_apellido LIKE :busqueda");
 
+        $busquedaParam = '%' . $busqueda . '%';
+        $stmt->bindValue(":busqueda", $busquedaParam);
+        $stmt->execute();
+
+        $resultados = $stmt->fetchAll();
+
+        return $resultados;
+    }
+    
     public function edit($id) {
         $docente = $this->show($id);
         // Puedes implementar esta función si necesitas cargar una vista para editar un docente
@@ -77,10 +92,10 @@ class DocenteController{
         $stmt->execute();
     }
 
-    public function destroy($id) {
+    public function destroy($cedula) {
         $this->connection->beginTransaction();
-        $stmt = $this->connection->prepare("DELETE FROM docentes WHERE idDocentes = :id");
-        $stmt->bindValue(":cedula", $id);
+        $stmt = $this->connection->prepare("DELETE FROM docentes WHERE cedula = :cedula");
+        $stmt->bindValue(":cedula", $cedula);
         $stmt->execute();
 
         $confirma = readLine("Seguro que deseas eliminar este registro?");
@@ -89,31 +104,12 @@ class DocenteController{
         else
             $this->connection->commit();
     }
-    // A partir de aqui estan las funciones usadas en modificar_estudiante
+    // funciones usadas en modificar_estudiante
     public function destroyEstudiante($cedula) {
         $stmt = $this->connection->prepare("DELETE FROM estudiante WHERE cedula = :cedula");
         $stmt->execute([":cedula"=> $cedula]);
 
     }
-
-    public function buscarDocente($busqueda) {
-        $connection = Connection::getInstance()->get_database_instance();
-
-        // Consulta SQL para buscar docentes por cédula o nombre
-        $stmt = $connection->prepare("SELECT * FROM docentes 
-                                      WHERE cedula LIKE :busqueda OR 
-                                            primer_nombre LIKE :busqueda OR 
-                                            primer_apellido LIKE :busqueda");
-
-        $busquedaParam = '%' . $busqueda . '%';
-        $stmt->bindValue(":busqueda", $busquedaParam);
-        $stmt->execute();
-
-        $resultados = $stmt->fetchAll();
-
-        return $resultados;
-    }
-
 
 }
 

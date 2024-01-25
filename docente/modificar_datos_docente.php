@@ -7,7 +7,14 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'docente') {
     header("Location: ../index.php");
     exit();
 }
-
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
+    // Destruir la sesión
+    session_destroy();
+    
+    // Redirigir al usuario
+    header("Location: ../index.php");
+    exit();
+}
 // Incluir el controlador y crear una instancia
 use App\Controladores\DocenteController;
 require("../vendor/autoload.php");
@@ -30,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'correo' => $_POST['correo'],
         'direccion_domicilio' => $_POST['direccion_domicilio'],
         'passwordd'=>$_POST['passwordd'],
-        'fecha_nacimiento' => $_POST['fecha_nacimiento'],
+        'fecha_nacimiento' => $docenteinfo['fecha_nacimiento'],
         'cedula' => $user
     );
 
@@ -62,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="primer_apellido">Apellido:</label>
         <input type="text" id="primer_apellido" name="primer_apellido" value="<?php echo $docenteinfo['primer_apellido']; ?>" required><br><br>
 
-        <label for="fecha_nacimiento">Fecha de nacimiento:</label>
+        <label for="fecha_nacimiento">fecha de Nacimiento:</label>
         <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?php echo $docenteinfo['fecha_nacimiento']; ?>" required><br><br>
 
         <label for="telefono_celular">Teléfono:</label>
@@ -83,5 +90,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <br></br>
 
     <button onclick="location.href='menuDocente.php'">Volver al Menú Docente</button>
+        <form action="#" method="post">
+            <button type="submit" name="logout">Cerrar sesión</button>
+        </form>
 </body>
 </html>

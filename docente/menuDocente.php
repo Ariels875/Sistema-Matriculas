@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirm_password"])) {
     <h1>Menú Docente</h1>
 
     <div class="menu-buttons">
-        <button onclick="location.href='modificar_estudiante/modificar_estudiante.php'">Modificar Estudiante</button>
+        <button onclick="location.href='modificar_estudiante.php'">Modificar Estudiante</button>
         <button onclick="location.href='carrera_periodo.php'">Modificar Carrera y Periodo Académico</button>
         <button onclick="location.href='asignaturas_aulas.php'">Modificar Asignaturas y Aulas</button>
         <button onclick="location.href='modificar_datos_docente.php'">Modificar Mis Datos</button>
