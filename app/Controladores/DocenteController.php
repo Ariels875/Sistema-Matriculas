@@ -5,9 +5,16 @@ namespace App\Controladores;
 use Database\Connection;
 
 class DocenteController{
+    
+    private $connection;
+
+    public function __construct(){
+        $this->connection = Connection::getInstance()->get_database_instance();
+    }
+    
     public function index() {
-        $connection = Connection::getInstance()->get_database_instance();
-        $stmt = $connection->prepare("SELECT * FROM docentes");
+
+        $stmt = $this->connection->prepare("SELECT * FROM docentes");
         $stmt->execute();
         $docentes = $stmt->fetchAll();
         return $docentes;
@@ -18,9 +25,8 @@ class DocenteController{
     }
 
     public function store($data) {
-        $connection = Connection::getInstance()->get_database_instance();
 
-        $stmt = $connection->prepare("INSERT INTO docentes (cedula, primer_nombre, primer_apellido,
+        $stmt = $this->connection->prepare("INSERT INTO docentes (cedula, primer_nombre, primer_apellido,
          fecha_nacimiento, telefono_celular, correo, direccion_domicilio) VALUES(:cedula,
           :primer_nombre, :primer_apellido, :fecha_nacimiento, :telefono_celular, :correo, :direccion_domicilio);");
 
@@ -37,12 +43,11 @@ class DocenteController{
     }
 
     public function show($usuario) {
-        $connection = Connection::getInstance()->get_database_instance();
-        $stmt = $connection->prepare("SELECT * FROM docentes WHERE cedula = :usuario");
+        $stmt = $this->connection->prepare("SELECT * FROM docentes WHERE cedula = :usuario");
         $stmt->bindValue(":usuario", $usuario);
         $stmt->execute();
-        $docente = $stmt->fetch();
-        return $docente;
+        $infodocente = $stmt->fetch();
+        return $infodocente;
     }
 
     public function edit($id) {
@@ -51,16 +56,14 @@ class DocenteController{
         return $docente;
     }
 
-    public function update($id, $data) {
-        $connection = Connection::getInstance()->get_database_instance();
-
-        $stmt = $connection->prepare("UPDATE docentes SET cedula = :cedula, primer_nombre = :primer_nombre,
+    public function update($docenteinfo, $data) {
+        $stmt = $this->connection->prepare("UPDATE docentes SET cedula = :cedula, primer_nombre = :primer_nombre,
          primer_apellido = :primer_apellido, fecha_nacimiento = :fecha_nacimiento,
          telefono_celular = :telefono_celular, correo = :correo, direccion_domicilio = :direccion_domicilio,
          passwordd = :passwordd
-         WHERE idDocentes = :id;");
+         WHERE cedula = :cedula;");
 
-        $stmt->bindValue(":cedula", $data["cedula"]);
+        $stmt->bindValue(":cedula", $docenteinfo);
         $stmt->bindValue(":primer_nombre", $data["primer_nombre"]);
         $stmt->bindValue(":primer_apellido", $data["primer_apellido"]);
         $stmt->bindValue(":fecha_nacimiento", $data["fecha_nacimiento"]);
@@ -68,21 +71,51 @@ class DocenteController{
         $stmt->bindValue(":correo", $data["correo"]);
         $stmt->bindValue(":direccion_domicilio", $data["direccion_domicilio"]);
         $stmt->bindValue(":passwordd", $data["passwordd"]);
-        $stmt->bindValue(":id", $id);
+        $stmt->bindValue(":idDocentes", $data["idDocentes"]);
 
 
         $stmt->execute();
     }
 
     public function destroy($id) {
-        $connection = Connection::getInstance()->get_database_instance();
-        $stmt = $connection->prepare("DELETE FROM docentes WHERE idDocentes = :id");
-        $stmt->bindValue(":id", $id);
+        $this->connection->beginTransaction();
+        $stmt = $this->connection->prepare("DELETE FROM docentes WHERE idDocentes = :id");
+        $stmt->bindValue(":cedula", $id);
         $stmt->execute();
+
+        $confirma = readLine("Seguro que deseas eliminar este registro?");
+        if ($confirma == "no")
+        $this->connection->rollBack();
+        else
+            $this->connection->commit();
     }
+    // A partir de aqui estan las funciones usadas en modificar_estudiante
+    public function destroyEstudiante($cedula) {
+        $stmt = $this->connection->prepare("DELETE FROM estudiante WHERE cedula = :cedula");
+        $stmt->execute([":cedula"=> $cedula]);
+
+    }
+
+    public function buscarDocente($busqueda) {
+        $connection = Connection::getInstance()->get_database_instance();
+
+        // Consulta SQL para buscar docentes por cédula o nombre
+        $stmt = $connection->prepare("SELECT * FROM docentes 
+                                      WHERE cedula LIKE :busqueda OR 
+                                            primer_nombre LIKE :busqueda OR 
+                                            primer_apellido LIKE :busqueda");
+
+        $busquedaParam = '%' . $busqueda . '%';
+        $stmt->bindValue(":busqueda", $busquedaParam);
+        $stmt->execute();
+
+        $resultados = $stmt->fetchAll();
+
+        return $resultados;
+    }
+
+
 }
-
-
 
 
 /*los controladores tienen normalmente 7 metodos y se usan
@@ -102,14 +135,3 @@ update actualiza un recurso del almacenamiento
 
 destroy quita un recurso especifico del almacenamiento
 */
-
-
-        /*
-        '{$data['cedula']}',
-        '{$data['primer_nombre']}',
-        '{$data['primer_apellido']}',
-        '{$data['fecha_nacimiento']}',
-        '{$data['telefono_celular']}',
-        '{$data['correo']}',
-        '{$data['direccion_domicilio']}'
-        */

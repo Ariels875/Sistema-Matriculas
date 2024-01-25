@@ -14,14 +14,11 @@ require("../vendor/autoload.php");
 
 $docenteController = new DocenteController();
 
-// Obtener el id a partir del user
+// Obtener la cedula a partir del user
+$user = $_SESSION['usuario'];
 
-// $user = $_SESSION['usuario'];
-$docente = $docenteController->show($usuario);
-
-// Obtener la información del docente actual
-// $docenteId = $_SESSION['docente_id'];
-// $docente = $docenteController->show($docenteId);
+// Obtener la información del docente actual retornando la info del docente
+$docenteinfo = $docenteController->show($user);
 
 // Procesar el formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -32,11 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'telefono_celular' => $_POST['telefono_celular'],
         'correo' => $_POST['correo'],
         'direccion_domicilio' => $_POST['direccion_domicilio'],
-        'passwordd'=>$_POST['passwordd']
+        'passwordd'=>$_POST['passwordd'],
+        'fecha_nacimiento' => $_POST['fecha_nacimiento'],
+        'cedula' => $user
     );
 
     // Actualizar los datos del docente
-    $docenteController->update($docenteId, $nuevosDatos);
+    $docenteController->update($user, $nuevosDatos);
 
     // Redirigir a la página de éxito o a donde sea necesario
     header("Location: modificar_datos_docente.php?exito=true");
@@ -57,25 +56,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Formulario para modificar los datos -->
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <label for="primer_nombre">Primer Nombre:</label>
-        <input type="text" id="primer_nombre" name="primer_nombre" value="<?php echo $docente['primer_nombre']; ?>" required>
+        <label for="primer_nombre">Nombre:</label>
+        <input type="text" id="primer_nombre" name="primer_nombre" value="<?php echo $docenteinfo['primer_nombre']; ?>" required><br><br>
 
-        <label for="primer_apellido">Primer Apellido:</label>
-        <input type="text" id="primer_apellido" name="primer_apellido" value="<?php echo $docente['primer_apellido']; ?>" required>
+        <label for="primer_apellido">Apellido:</label>
+        <input type="text" id="primer_apellido" name="primer_apellido" value="<?php echo $docenteinfo['primer_apellido']; ?>" required><br><br>
 
-        <label for="telefono_celular">Teléfono Celular:</label>
-        <input type="text" id="telefono_celular" name="telefono_celular" value="<?php echo $docente['telefono_celular']; ?>" required>
+        <label for="fecha_nacimiento">Fecha de nacimiento:</label>
+        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?php echo $docenteinfo['fecha_nacimiento']; ?>" required><br><br>
+
+        <label for="telefono_celular">Teléfono:</label>
+        <input type="text" id="telefono_celular" name="telefono_celular" value="<?php echo $docenteinfo['telefono_celular']; ?>" required><br><br>
 
         <label for="correo">Correo Electrónico:</label>
-        <input type="email" id="correo" name="correo" value="<?php echo $docente['correo']; ?>" required>
+        <input type="email" id="correo" name="correo" value="<?php echo $docenteinfo['correo']; ?>" required><br><br>
 
         <label for="direccion_domicilio">Dirección Domicilio:</label>
-        <input type="text" id="direccion_domicilio" name="direccion_domicilio" value="<?php echo $docente['direccion_domicilio']; ?>" required>
+        <input type="text" id="direccion_domicilio" name="direccion_domicilio" value="<?php echo $docenteinfo['direccion_domicilio']; ?>" required><br><br>
         
         <label for="contrasena">Contraseña:</label>
-        <input type="password" id="contrasena" name="passwordd" value="<?php echo $docente['passwordd']; ?>" required>
+        <input type="password" id="contrasena" name="passwordd" value="<?php echo $docenteinfo['passwordd']; ?>" required><br><br>
 
-        <button type="submit">Guardar Cambios</button>
+        <button type="submit">Guardar Cambios</button><br>
     </form>
 
     <br></br>

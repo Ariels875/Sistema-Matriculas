@@ -49,7 +49,8 @@
     }
     ?>
 
-    <form action="procesar_formulario.php" method="post">
+    <br><br>
+    <form action="" method="post">
         <label for="input1">Cedula:</label>
         <input type="text" name="input1" id="input1" required><br><br>
 

@@ -8,6 +8,14 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'docente') {
     exit();
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
+    // Destruir la sesión
+    session_destroy();
+    
+    // Redirigir al usuario
+    header("Location: ../index.php");
+    exit();
+}
 // Manejar la lógica para verificar la contraseña
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirm_password"])) {
     $password = $_POST["confirm_password"];
@@ -34,13 +42,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirm_password"])) {
     <h1>Menú Docente</h1>
 
     <div class="menu-buttons">
-        <button onclick="location.href='modificar_estudiante.php'">Modificar Estudiante</button>
+        <button onclick="location.href='modificar_estudiante/modificar_estudiante.php'">Modificar Estudiante</button>
         <button onclick="location.href='carrera_periodo.php'">Modificar Carrera y Periodo Académico</button>
         <button onclick="location.href='asignaturas_aulas.php'">Modificar Asignaturas y Aulas</button>
         <button onclick="location.href='modificar_datos_docente.php'">Modificar Mis Datos</button>
 
     </div>
-    <br>        <!-- Agregar el botón para agregar/insertar docente -->
+    <br>        <!-- botón para agregar/insertar docente -->
     <form action="#" method="post">
         <button type="submit">Agregar/Eliminar Docente</button><br>
             <?php if (isset($error_message)) { echo "<p>$error_message</p>"; } ?>
@@ -51,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirm_password"])) {
 
     <br></br>
 
-    <form action="../login/logout.php" method="post">
+    <form action="#" method="post">
         <button type="submit" name="logout">Cerrar sesión</button>
     </form>
 </body>

@@ -7,6 +7,16 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'estudiante') {
     header("Location: ../index.php");
     exit();
 }
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
+    // Destruir la sesión
+    session_destroy();
+    
+    // Redirigir al usuario
+    header("Location: ../index.php");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +39,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'estudiante') {
 
     <br></br>
 
-    <form action="../login/logout.php" method="post">
+    <form action="#" method="post">
         <button type="submit" name="logout">Cerrar sesión</button>
     </form>
 </body>
