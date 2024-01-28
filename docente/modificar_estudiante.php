@@ -135,7 +135,7 @@ function mostrarFormularioActualizacion($estudiante) {
             <h1>Panel de Control Estudiante</h1>
             <form method="post" action="modificar_estudiante.php">
                 <input type="hidden" name="idEstudiante" value="' . $estudiante["idEstudiante"] . '">
-                <label for="cedula">Cedulae:</label>
+                <label for="cedula">Cedula:</label>
                 <input type="text" name="cedula" value="' . $estudiante["cedula"] . '" required><br><br>
 
                 <label for="cedula">Primer Nombre:</label>
