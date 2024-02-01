@@ -6,9 +6,7 @@ $cedulaUsuario = $_POST["usuario"];
 $estudianteController = new EstudianteController;
 $matriculasController = new MatriculasController;
 
-$infoEstudiante = $estudianteController->show($cedulaUsuario);
-$idEstudiante = $infoEstudiante["idEstudiante"];
-$infoMatriculaEstudiante = $matriculasController->showMatriculaEstudiante($idEstudiante);
+$NivelActual = $matriculasController->ArielsControl($cedulaUsuario);
 
 ?>
 <!DOCTYPE html>

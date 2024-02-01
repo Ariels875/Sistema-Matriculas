@@ -9,10 +9,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
     header("Location: ../index.php");
     exit();
 }
-
-use App\Controladores\AsignaturasController; // Cambiar el nombre del controlador
+use App\Controladores\AsignaturasController;
+use App\Controladores\CarreraController;
+use App\Controladores\DocenteController;
 require("../vendor/autoload.php");
-$asignaturaController = new AsignaturasController(); // Cambiar el nombre del controlador
+$asignaturaController = new AsignaturasController(); 
+$carreraController = new CarreraController(); 
+$docenteController = new DocenteController(); 
 $mensajeExito = '';
 $mensajeError = '';
 $resultados = array();
@@ -37,7 +40,6 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
     <button id="actualizarBtn">Editar una Asignatura</button>
     <button id="deleteBtn">Eliminar una Asignatura</button>
     <button id="createBtn">Crear una Asignatura</button>
-    <button onclick="location.href='aulas.php'">Modificar Aulas</button>
     <button onclick="location.href='menuDocente.php'">Volver al Menú Docente</button>
     <form action="#" method="post">
         <button type="submit" name="logout">Cerrar sesión</button>
@@ -49,7 +51,7 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
             // Lógica para mostrar los datos de una asignatura
             if (isset($_POST['busqueda'])) {
                 $busqueda = $_POST['busqueda'];
-                $resultados = $asignaturaController->buscarAsignatura($busqueda); // Cambiar el nombre de la función
+                $resultados = $asignaturaController->buscarAsignatura($busqueda); 
                 // Cambiar el nombre de la función de resultados
                 $asignaturaController->ResultadosBuscarAsignatura($resultados);
             }
@@ -60,8 +62,8 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
             if (isset($_POST['enviado'])) {
                 // Formulario para que el usuario especifique el ID de la asignatura
                 // Si se envió el formulario con el ID de la asignatura
-                $asignaturaId = isset($_POST['asignaturaId']) ? $_POST['asignaturaId'] : '';
-                $info = $asignaturaController->showAsignatura($asignaturaId, $nivel_idNivel, $nivel_carrera_idCarrera); // Cambiar el nombre de la función
+                $asignaturaId = isset($_POST['idAsignatura']) ? $_POST['idAsignatura'] : '';
+                $info = $asignaturaController->showAsignatura($asignaturaId); 
 
                 if ($info) { // Asegurarse de que se obtuvo información de la asignatura
                     ?>
@@ -74,8 +76,6 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
                         <label for="creditos">Créditos:</label>
                         <input type="number" name="creditos" value="<?php echo htmlspecialchars($info["creditos"]); ?>" required><br><br>
 
-                        <!-- Puedes seguir añadiendo más campos según tu tabla -->
-
                         <input type="hidden" name="asignatura_Id" value="<?php echo htmlspecialchars($info["idAsignatura"]); ?>">
                         <input type="submit" name="actualizar" value="Actualizar Datos">
                     </form>
@@ -83,20 +83,18 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
 
                     if (isset($_POST['actualizar'])) {
                         $nombreAsignatura = isset($_POST['nombre_asignatura']) ? $_POST['nombre_asignatura'] : '';
-                        $creditos = isset($_POST['creditos']) ? $_POST['creditos'] : '';
-                        $asignaturaId = isset($_POST['asignatura_Id']) ? $_POST['asignatura_Id'] : '';
+                        $creditos = isset($_POST['creditos']) ? $_POST['creditos'] : '35';
 
                         $data = array(
                             'nombre_asignatura' => $nombreAsignatura,
-                            'creditos' => $creditos
-                            // Puedes añadir más campos aquí según tu tabla
+                            'creditos' => $creditos,
+                            'idAsignatura' => $info["idAsignatura"]
                         );
 
-                        $asignaturaController->updateAsignatura($idAsignatura, $nivel_idNivel, $nivel_carrera_idCarrera, $data); // Cambiar el nombre de la función
+                        $asignaturaController->updateAsignatura($data); // Cambiar el nombre de la función
                         $mensajeExito = "Datos de la asignatura actualizados correctamente.";
                     }
                 } else {
-                    // Manejar el caso en que no se encontró la asignatura con el ID especificado
                     echo "La asignatura con el ID especificado no fue encontrada.";
                 }
             }
@@ -106,7 +104,7 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
             // Lógica para eliminar una asignatura
             if (isset($_POST["nombre_asignatura"])) {
                 $nombreAsignatura = isset($_POST['nombre_asignatura']) ? $_POST['nombre_asignatura'] : '';
-                $asignaturaController->destroyAsignatura($idAsignatura, $nivel_idNivel, $nivel_carrera_idCarrera); // Cambiar el nombre de la función
+                $asignaturaController->destroyAsignatura($nombreAsignatura);
 
                 $mensajeExito = "La asignatura ha sido eliminada";
             } else {
@@ -116,22 +114,31 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
 
         case 'store':
             // Lógica para almacenar los datos de la asignatura
-            if (isset($_POST["nombre_asignatura"])) {
+            if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "store" && isset($_POST["nombre_asignatura"]) && isset($_POST["idDocentes"])) {
                 $data = array(
+                    'nivel_carrera_idCarrera' => intval($_POST['idCarrera']),
+                    'nivelCarrera' => intval($_POST['nivel']),
                     'nombre_asignatura' => $_POST['nombre_asignatura'],
-                    'creditos' => $_POST['creditos']
-                    // Puedes añadir más campos aquí según tu tabla
+                    'creditos' => intval($_POST['creditos']),
+                    'docentes_idDocentes' => intval($_POST['idDocentes'])
+
                 );
                 $asignaturaController->storeAsignatura($data); // Cambiar el nombre de la función
                 $mensajeExito = "Datos enviados correctamente.";
             } else {
                 $mensajeError = "Por favor, complete todos los campos del formulario.";
+                var_dump($_POST["action"]);
+                echo "<br>";
+                var_dump($_POST["nombre_asignatura"]);
+                echo "<br>";
+                var_dump($_POST["idDocentes"]);
+
             }
             break;
 
         case 'index':
             // Lógica para mostrar todas las asignaturas
-            $asignaturaController->indexAsignatura(); // Cambiar el nombre de la función
+            $asignaturaController->indexAsignaturaTable(); // Cambiar el nombre de la función
             break;
 
         default:
@@ -151,6 +158,15 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
     </div>
 
     <!-- Formularios ocultos -->
+    <div id="actualizarForm" style="display:none;">
+        <form method="post" action="asignatura.php">
+            <input type="hidden" name="action" value="update">
+            <label for="asignaturaId">Ingrese el ID de la asignatura a actualizar:</label>
+            <input type="number" name="idAsignatura" required>
+            <input type="hidden" name="enviado" value="true">
+            <input type="submit" value="Enviar">
+        </form>
+    </div>
     <div id="showForm" style="display:none;">
         <form method="post" action="asignatura.php">
             <!-- ... campos para mostrar datos -->
@@ -173,23 +189,53 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
 
     <div id="createForm" style="display:none;">
         <form method="post" action="asignatura.php">
+            <input type="hidden" name="action" value="crearAsignatura">
             <!-- ... campos para crear -->
-            <label for="nombre_asignatura">Nombre de la asignatura a crear:</label>
+            <label for="idCarrera">Carrera en la que estará: </label>
+            <select id="idCarrera" name="idCarrera">
+                <?php
+                // Datos de opciones generados dinámicamente en PHP
+                $opciones = $carreraController->indexCarreraAlloptions();
+
+                // Generar opciones utilizando un bucle en PHP
+                foreach ($opciones as $opcion) {
+                    echo '<option value="' . htmlspecialchars($opcion['idCarrera']) . '">' . htmlspecialchars($opcion['nombre_carrera']) . '</option>';
+                }
+                ?>
+            </select><br><br>
+            <label for="nivel">Nivel en el que estará: </label>
+            <select id="nivel" name="nivel">                
+                <option value="1">Primer Nivel</option>
+                <option value="2">Segundo Nivel</option>                        
+                <option value="3">Tercero Nivel</option>
+                <option value="4">Cuarto Nivel</option>
+                <option value="5">Quinto Nivel</option>
+                <option value="6">Sexto Nivel</option>
+                <option value="7">Septimo Nivel</option>
+                <option value="8">Octavo Nivel</option>
+                <option value="9">Noveno Nivel</option>
+                <option value="10">Decimo Nivel</option>
+            </select><br><br>                                    
+            <label for="nombre_asignatura">Nombre de la asignatura a crear: </label>
             <input type="text" name="nombre_asignatura" required><br><br>
             <label for="creditos">Créditos:</label>
             <input type="number" name="creditos" required><br><br>
+
+            <label for="idDocentes">Docente a cargo: </label>
+            <select id="idDocentes" name="idDocentes">
+                <option value="" selected>Seleccione un docente</option>
+                <?php
+                // Datos de opciones generados dinámicamente en PHP
+                $opciones2 = $docenteController->indexDocenteAll();
+
+                // Generar opciones utilizando un bucle en PHP
+                foreach ($opciones2 as $opcion2) {
+                    echo '<option value="' . htmlspecialchars($opcion2['idDocentes']) .'">' . htmlspecialchars($opcion2['primer_nombre']) ." ". htmlspecialchars($opcion2['primer_apellido']) . '</option>';
+                }
+                ?>
+            </select><br><br>
             <input type="hidden" name="action" value="store">
             <input type="submit" value="Crear Asignatura">
-        </form>
-    </div>
-
-    <div id="actualizarForm" style="display:none;">
-        <form method="post" action="asignatura.php">
-            <input type="hidden" name="action" value="update">
-            <label for="asignaturaId">Ingrese el ID de la asignatura a actualizar:</label>
-            <input type="text" name="asignaturaId" required>
-            <input type="hidden" name="enviado" value="true">
-            <input type="submit" value="Enviar">
         </form>
     </div>
 

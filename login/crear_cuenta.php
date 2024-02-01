@@ -1,3 +1,46 @@
+<?php
+$mensajeExito = '';
+$mensajeError = '';
+
+require("../vendor/autoload.php");
+
+use App\Controladores\EstudianteController;
+    
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Verificar que los valores del formulario están presentes
+    if (isset($_POST["input1"]) && isset($_POST["input2"]) && isset($_POST["input3"])
+        && isset($_POST["input4"]) && isset($_POST["input5"]) && isset($_POST["input6"])
+        && isset($_POST["input7"]) && isset($_POST["input8"])) {
+
+            // Recoger los valores de los inputs en variables PHP
+        $input1 = $_POST["input1"];
+        $input2 = $_POST["input2"];
+        $input3 = $_POST["input3"];
+        $input4 = $_POST["input4"];
+        $input5 = $_POST["input5"];
+        $input6 = $_POST["input6"];
+        $input7 = $_POST["input7"];
+        $input8 = $_POST["input8"];
+
+            // Crear instancia del controlador y almacenar los datos
+        $controlEstudiante = new EstudianteController();
+        $controlEstudiante->store([
+            "cedula" => $input1,
+            "primer_nombre" => $input2,
+            "primer_apellido" => $input3,
+            "fecha_nacimiento" => $input4,
+            "telefono_celular" => $input5,
+            "correo" => $input6,
+            "direccion_domicilio" => $input7,
+            "passwordd" => $input8
+        ]);
+
+        $mensajeExito = "Cuenta creada correctamente.";
+    } else {
+        $mensajeError = "Por favor, complete todos los campos del formulario.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,50 +48,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario</title>
     <link rel="stylesheet" href="../css/styleadmin.css" />
+    <link rel="stylesheet" href="../css/styletable.css" />
 </head>
 <body>
     <h1 class="title">Crea una cuenta</h1>
-    <?php
-    require("../vendor/autoload.php");
-
-    use App\Controladores\EstudianteController;
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Verificar que los valores del formulario están presentes
-        if (isset($_POST["input1"]) && isset($_POST["input2"]) && isset($_POST["input3"])
-            && isset($_POST["input4"]) && isset($_POST["input5"]) && isset($_POST["input6"])
-            && isset($_POST["input7"]) && isset($_POST["input8"])) {
-
-            // Recoger los valores de los inputs en variables PHP
-            $input1 = $_POST["input1"];
-            $input2 = $_POST["input2"];
-            $input3 = $_POST["input3"];
-            $input4 = $_POST["input4"];
-            $input5 = $_POST["input5"];
-            $input6 = $_POST["input6"];
-            $input7 = $_POST["input7"];
-            $input8 = $_POST["input8"];
-
-            // Crear instancia del controlador y almacenar los datos
-            $controlEstudiante = new EstudianteController();
-            $controlEstudiante->store([
-                "cedula" => $input1,
-                "primer_nombre" => $input2,
-                "primer_apellido" => $input3,
-                "fecha_nacimiento" => $input4,
-                "telefono_celular" => $input5,
-                "correo" => $input6,
-                "direccion_domicilio" => $input7,
-                "passwordd" => $input8
-            ]);
-
-            echo "Datos enviados correctamente.";
-        } else {
-            echo "Por favor, complete todos los campos del formulario.";
+    <div>
+        <?php
+        if (!empty($mensajeExito)) {
+            echo '<div class="alert success">' . $mensajeExito . '</div>';
+        } elseif (!empty($mensajeError)) {
+            echo '<div class="alert error">' . $mensajeError . '</div>';
         }
-    }
-    ?>
-
+        ?>
+    </div>
     <br><br>
     <form action="" method="post">
         <label for="input1">Cedula:</label>
@@ -75,7 +87,9 @@
         <label for="input8">Contraseña:</label>
         <input type="password" name="input8" id="input8" required><br><br>
 
-        <input type="submit" value="Enviar">
+        <button id="Enviar" type="submit">Crear Cuenta!</button>
     </form>
+    <br><br>
+    <button onclick="location.href='../index.php'">Ir al inicio</button>
 </body>
 </html>

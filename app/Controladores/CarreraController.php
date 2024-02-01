@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Controladores;
-
+use PDOException;
 use Database\Connection;
-
+use PDO;
 class CarreraController {
 
     private $connection;
@@ -12,6 +12,22 @@ class CarreraController {
         $this->connection = Connection::getInstance()->get_database_instance();
     }
 
+    // Resto de tus importaciones y código
+    
+    public function indexCarreraAlloptions() {
+        try {
+            $stmt = $this->connection->prepare("SELECT * FROM carrera");
+            $stmt->execute();
+    
+            return $stmt->fetchAll();  // Devuelve los resultados en lugar de mostrarlos directamente
+        } catch (PDOException $e) {
+            echo "Error en la consulta: " . $e->getMessage();
+            return array();  // Devolver un array vacío en caso de error
+        }
+    }
+
+    
+    
     public function indexCarrera() {
         $stmt = $this->connection->prepare("SELECT * FROM carrera");
         $stmt->execute();
@@ -40,6 +56,46 @@ class CarreraController {
         $info = $stmt->fetch();
         return $info;
     }
+    public function showCarreraBidimensional($idCarrera) {
+        if (is_array($idCarrera) && count($idCarrera) > 1) {
+            $placeholders = implode(',', array_fill(0, count($idCarrera), '?'));
+    
+            $stmt = $this->connection->prepare("SELECT * FROM carrera WHERE idCarrera IN ($placeholders)");
+            $stmt->execute($idCarrera);
+            $info = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } elseif (is_array($idCarrera) && count($idCarrera) === 1) {
+            // Manejo especial para arrays unidimensionales
+            $info = $this->showCarrera($idCarrera[0]);
+        } else {
+            // Si $idCarrera es un solo valor, obtén información para ese ID
+            $stmt = $this->connection->prepare("SELECT * FROM carrera WHERE idCarrera = :idCarrera");
+            $stmt->bindValue(":idCarrera", $idCarrera);
+            $stmt->execute();
+            $info = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+    
+        return $info;
+    }
+    
+    
+    public function obtenerCarrerasPorIdCarrera($arrayDatos)
+    {
+        $infoCarrera = array();  // Inicializar el array
+    
+        foreach ($arrayDatos as $datos) {
+            foreach ($datos as $clave => $valor) {
+                // Verifica si la clave es 'asignatura_nivel_carrera_idCarrera'
+                if ($clave === 'asignatura_nivel_carrera_idCarrera') {
+                    $idCarrera = $valor;
+                    $infoCarrera[] = $this->showCarreraBidimensional($idCarrera);  // Agregar al array
+                }
+            }
+        }
+    
+        return $infoCarrera;
+    }
+    
+    
 
     public function updateCarrera($idCarrera, $data) {
         try {
@@ -129,6 +185,13 @@ class CarreraController {
         return $info;
     }
 
+        public function showPeriodoActivo($Activo) {
+        $stmt = $this->connection->prepare("SELECT * FROM periodo_academico WHERE estado = :estado");
+        $stmt->bindValue(":estado", $Activo);
+        $stmt->execute();
+        $info = $stmt->fetch();
+        return $info;
+    }
     public function updatePeriodo($idPeriodo_Academico, $data) {
         $stmt = $this->connection->prepare("UPDATE periodo_academico SET fecha_inicio = :fecha_inicio, 
                                            fecha_fin = :fecha_fin, estado = :estado

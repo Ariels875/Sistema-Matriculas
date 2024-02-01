@@ -26,14 +26,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú Estudiante</title>
     <link rel="stylesheet" href="../css/styleadmin.css" />
+    <link rel="shortcut icon" href="https://icons8.com/icon/88192/conflict">
 </head>
 <body>
     <h1>Menú Principal</h1>
 
     <div class="menu-buttons">
         <button onclick="location.href='matricularse.php'">Matricularse</button>
-        <button onclick="location.href='carrera_periodo.php'">Darse de baja</button>
-        <button onclick="location.href='asignaturas_aulas.php'">Horario</button>
+        <button onclick="location.href='darseBaja.php'">Darse de baja</button>
+        <button onclick="location.href='horarios.php'">Horario</button>
         <button onclick="location.href='pagos.php'">Pagos</button>
     </div>
 

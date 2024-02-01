@@ -10,8 +10,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
     exit();
 }
 use App\Controladores\CarreraController;
+use App\Controladores\PeriodoController;
 require("../vendor/autoload.php");
 $carreraController = new CarreraController();
+$periodoController = new PeriodoController();
+
 $mensajeExito = '';
 $mensajeError = '';
 $resultados = array();
@@ -30,7 +33,6 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
 <body>
     <!-- Botones de acción -->
 
-    <button id="index">Mostrar todos los Periodos Academicos</button>
     <button id="showBtn">Buscar Datos de un Periodo Academico</button>
     <button id="editBtn">Editar un Periodo Academico</button>
     <button id="deleteBtn">Eliminar un Periodo Academico</button>
@@ -53,16 +55,33 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
             case 'update':
                 // Lógica para actualizar los datos del estudiante
 
-                if (isset($_POST["enviar"])) {
+                if (isset($_POST["periodo_id"])) {
                     // Obtener el valor del input
                     $periodoId = isset($_POST['periodo_id']) ? $_POST['periodo_id'] : '';
                     if ($periodoId) {
                         // Llamar a la función show del controlador
-                        $info=$carreraController->showPeriodo($idperiodo);
-    
+                        $info = $periodoController->showPeriodoAcademico($periodoId);
+                
                         // Mostrar los datos en el formulario de actualización
                         if ($info) {
-                            mostrarFormularioActualizacion($info);
+                            ?>
+                            <form method="post" action="periodo.php">
+                                <!-- ... campos para actualizar -->
+                                <label for="fecha_inicio">Fecha de inicio del Periodo Academico a actualizar:</label>
+                                <input type="date" name="fecha_inicio" required><br><br>
+                                <label for="fecha_fin">Fecha de fin del Periodo Academico a actualizar:</label>
+                                <input type="date" name="fecha_fin" required><br><br>
+                
+                                <label for="estado">estado en la que estará</label>
+                                <select id="estado" name="estado">
+                                    <option value="Activo">Activo</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                </select><br><br>
+                
+                                <input type="hidden" name="idPeriodo_Academico" value="<?php echo $info["idPeriodo_Academico"]; ?>">
+                                <input type="submit" name="actualizar" value="Actualizar Datos">
+                            </form>
+                            <?php
                         } else {
                             echo "No se encontraron datos para la cédula proporcionada.";
                         }
@@ -71,16 +90,16 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
                     }
                 } elseif (isset($_POST["actualizar"])) {
                     // Procesar el formulario de actualización
-                    $periodoId = isset($_POST["periodoId"]) ? $_POST["periodoId"] : null;
                     $data = [
                         "fecha_inicio" => isset($_POST["fecha_inicio"]) ? $_POST["fecha_inicio"] : null,
                         "fecha_fin" => isset($_POST["fecha_fin"]) ? $_POST["fecha_fin"] : null,
-                        "estado" => isset($_POST["estado"]) ? $_POST["estado"] : null
+                        "estado" => isset($_POST["estado"]) ? $_POST["estado"] : null,
+                        "idPeriodo_Academico" => isset($_POST["idPeriodo_Academico"]) ? $_POST["idPeriodo_Academico"] : null,
                     ];
-    
+                
                     // Llamar a la función update del controlador
-                    if ($periodoId && $data["idEstudiante"]) {
-                        $carreraController->updatePeriodo($periodoId, $data);
+                    if ($data["idPeriodo_Academico"]) {
+                        $periodoController->updatePeriodoAcademico($data);
                         echo "Datos actualizados correctamente.";
                     } else {
                         echo "Error al procesar el formulario de actualización.";
@@ -92,7 +111,7 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
                 // Lógica para eliminar una carrera
                 if(isset($_POST["idPeriodo_Academico"])){
                     $carreraId = isset($_POST['idPeriodo_Academico']) ? $_POST['idPeriodo_Academico'] : '';
-                    $carreraController->destroyCarrera($carreraId);
+                    $periodoController->destroyPeriodoAcademico($carreraId);
         
                     $mensajeExito = "La carrera ha sido eliminada";
                 }else{
@@ -102,7 +121,7 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
         
             case 'store':
                 // Lógica para almacenar los datos del estudiante
-                if(isset($_POST["nombre_carrera"])){
+                if(isset($_POST["estado"])){
                     $data = array(
                         'fecha_inicio' => $_POST['fecha_inicio'],
                         'fecha_fin' => $_POST['fecha_fin'],
@@ -147,9 +166,11 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
     </div>
 
     <div id="editForm" style="display:none;">
-        <form method="post" action="periodo.php">
-            <!-- ... campos para editar -->
-            <input type="hidden" name="action" value="edit">
+        <form method="post" action="xd.php">
+            
+            <label for="periodo_id">Introduzca el id del periodo Academico:</label>
+            <input type="text" name="periodo_id">
+            <input type="hidden" name="action" value="update">
             <input type="submit" value="Editar">
         </form>
     </div>

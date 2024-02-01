@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controladores;
-
+use PDOException;
 use Database\Connection;
 
 class EstudianteController{
@@ -47,12 +47,18 @@ class EstudianteController{
     }
 
     public function show($cedula) {
-        $stmt = $this->connection->prepare("SELECT * FROM estudiante WHERE cedula = :cedula");
-        $stmt->bindValue(":cedula", $cedula);
-        $stmt->execute();
-        $info = $stmt->fetch();
-        return $info;
+        try{
+            $stmt = $this->connection->prepare("SELECT * FROM estudiante WHERE cedula = :cedula");
+            $stmt->bindValue(":cedula", $cedula);
+            $stmt->execute();
+            $info = $stmt->fetch();
+            return $info;
+        }catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+            return array();
+        }
     }
+    
 
     public function edit() {}
 

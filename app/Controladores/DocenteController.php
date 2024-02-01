@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Controladores;
-
+use PDOException;
+use PDO;
 use Database\Connection;
 
 class DocenteController{
@@ -12,12 +13,25 @@ class DocenteController{
         $this->connection = Connection::getInstance()->get_database_instance();
     }
     
-    public function index() {
-
+    public function indexDocenteAll() {
         $stmt = $this->connection->prepare("SELECT * FROM docentes");
         $stmt->execute();
-        $docentes = $stmt->fetchAll();
-        return $docentes;
+        // Usamos el argumento PDO::FETCH_ASSOC para devolver el resultado como un array asociativo
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    
+
+    public function indexDocenteAlloptions() {
+        try {
+            $stmt = $this->connection->prepare("SELECT * FROM docentes");
+            $stmt->execute();
+    
+            return $stmt->fetchAll();  // Devuelve los resultados en lugar de mostrarlos directamente
+        } catch (PDOException $e) {
+            echo "Error en la consulta: " . $e->getMessage();
+            return array();  // Devolver un array vacío en caso de error
+        }
     }
 
     public function create() {
@@ -50,6 +64,15 @@ class DocenteController{
         $infodocente = $stmt->fetch();
         return $infodocente;
     }
+
+    public function showInfoDocente($usuario) {
+        $stmt = $this->connection->prepare("SELECT * FROM docentes WHERE idDocentes = :usuario");
+        $stmt->bindValue(":usuario", $usuario);
+        $stmt->execute();
+        $infodocente = $stmt->fetch();
+        return $infodocente;
+    }
+
     public function buscarDocente($busqueda) {
         $stmt = $this->connection->prepare("SELECT * FROM docentes 
                                       WHERE cedula LIKE :busqueda OR 
