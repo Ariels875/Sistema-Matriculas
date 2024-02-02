@@ -26,5 +26,10 @@
     </form>
 
     <p>No tienes una cuenta? <a href="./login/crear_cuenta.php">Crear cuenta</a></p>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <footer>
+        <a href="https://www.instagram.com/ariels0_0?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">Ariels
+
+    </footer>
 </body>
 </html>

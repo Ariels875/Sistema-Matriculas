@@ -37,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirm_password"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú Docente</title>
     <link rel="stylesheet" href="../css/styleadmin.css" />
-    <link rel="shortcut icon" href="https://icons8.com/icon/88192/conflict">
 </head>
 <body>
     <h1>Menú Docente</h1>
@@ -47,6 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["confirm_password"])) {
         <button onclick="location.href='carrera.php'">Modificar Carrera y Periodo Académico</button>
         <button onclick="location.href='asignatura.php'">Modificar Asignaturas</button>
         <button onclick="location.href='modificar_datos_docente.php'">Modificar Mis Datos</button>
+        <button onclick="location.href='gestionPagos.php'">Gestionar Pagos</button>
+
 
     </div>
     <br>        <!-- botón para agregar/insertar docente -->

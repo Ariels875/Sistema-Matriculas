@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 // Verificar si la sesión está iniciada y si el rol es estudiante
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'estudiante') {
     // Si no hay sesión o el rol no es estudiante, redirigir al formulario de inicio de sesión
@@ -16,7 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
     header("Location: ../index.php");
     exit();
 }
+require("../vendor/autoload.php");
+use App\Controladores\EstudianteController;
+$estudianteController = new EstudianteController;
 
+$cedulaUsuario = $_SESSION['usuario'];
+$infoUser = $estudianteController->show($cedulaUsuario);
+$nombreUser = $infoUser['primer_nombre'];
 ?>
 
 <!DOCTYPE html>
@@ -30,8 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
 </head>
 <body>
     <h1>Menú Principal</h1>
+    <h2>Hola <?= $nombreUser; ?> espero que estes teniendo un bonito día.</h2>
 
     <div class="menu-buttons">
+        
         <button onclick="location.href='matricularse.php'">Matricularse</button>
         <button onclick="location.href='darseBaja.php'">Darse de baja</button>
         <button onclick="location.href='horarios.php'">Horario</button>

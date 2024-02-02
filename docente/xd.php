@@ -1,4 +1,20 @@
 <?php
+session_start();
+
+// Verificar si la sesión está iniciada y si el rol es docente
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'docente') {
+    // Si no hay sesión o el rol no es docente, redirigir al formulario de inicio de sesión
+    header("Location: ../index.php");
+    exit();
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
+    // Destruir la sesión
+    session_destroy();
+    
+    // Redirigir al usuario
+    header("Location: ../index.php");
+    exit();
+}
 require("../vendor/autoload.php");
 
 use App\Controladores\PeriodoController;

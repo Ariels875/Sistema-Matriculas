@@ -2,6 +2,7 @@
 
 namespace App\Controladores;
 use PDO;
+use PDOException;
 use Database\Connection;
 use App\Controladores\DocenteController;
 use App\Controladores\CarreraController;
@@ -97,15 +98,16 @@ class AsignaturasController {
     public function updateAsignatura($data) {
         try {
             $stmt = $this->connection->prepare("UPDATE asignatura SET nombre_asignatura = :nombre_asignatura, 
-                                               creditos = :creditos, docentes_idDocentes = :docentes_idDocentes
+                                               creditos = :creditos, docentes_idDocentes = :docentes_idDocentes,
+                                               nivel_idNivel = :nivel_idNivel
                                                WHERE idAsignatura = :idAsignatura");
     
             $stmt->bindValue(":idAsignatura", $data["idAsignatura"]);
             $stmt->bindValue(":nombre_asignatura", $data["nombre_asignatura"]);
             $stmt->bindValue(":creditos", $data["creditos"]);
-            //$stmt->bindValue(":nivel_idNivel", $data["nivel_idNivel"]);
+            $stmt->bindValue(":nivel_idNivel", $data["nivel_idNivel"]);
             //$stmt->bindValue(":nivel_carrera_idCarrera", $data["nivel_carrera_idCarrera"]);
-            //$stmt->bindValue(":docentes_idDocentes", $data["docentes_idDocentes"]);
+            $stmt->bindValue(":docentes_idDocentes", $data["docentes_idDocentes"]);
     
             $stmt->execute();
     
@@ -219,6 +221,25 @@ class AsignaturasController {
         $stmt->execute();
     
         return $stmt->fetch();
+    }
+    public function getNumeroMatriculasMateria($idEstudiante, $idAsignatura) {
+        try {
+            $stmt = $this->connection->prepare("SELECT COUNT(*) FROM matricula 
+                                                WHERE estudiante_idEstudiante = :idEstudiante
+                                                AND asignatura_idAsignatura = :idAsignatura");
+    
+            $stmt->bindValue(":idEstudiante", $idEstudiante);
+            $stmt->bindValue(":idAsignatura", $idAsignatura);
+            $stmt->execute();
+    
+            // Obtiene el resultado
+            $count = $stmt->fetchColumn();
+    
+            return $count;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
     }
     
 

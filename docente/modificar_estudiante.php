@@ -189,7 +189,7 @@ function mostrarFormularioActualizacion($estudiante) {
         }
         ?>
 
-        <!-- Formulario para eliminar docente -->
+        <!-- Formulario para eliminar estudiante -->
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
             <input type="hidden" name="form_type" value="eliminarEstudiante">
 
@@ -198,7 +198,7 @@ function mostrarFormularioActualizacion($estudiante) {
             <button type="submit">Eliminar Estudiante</button>
         </form>
 
-        <!-- Formulario para buscar docente -->
+        <!-- Formulario para buscar estudiante -->
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
             <input type="hidden" name="form_type" value="buscarEstudiante">
 

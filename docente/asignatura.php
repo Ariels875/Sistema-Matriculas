@@ -1,10 +1,17 @@
 <?php
 // asignatura.php
+session_start();
 
+// Verificar si la sesión está iniciada y si el rol es docente
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'docente') {
+    // Si no hay sesión o el rol no es docente, redirigir al formulario de inicio de sesión
+    header("Location: ../index.php");
+    exit();
+}
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logout"])) {
     // Destruir la sesión
     session_destroy();
-
+    
     // Redirigir al usuario
     header("Location: ../index.php");
     exit();
@@ -60,45 +67,22 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
         case 'update':
             // Lógica para actualizar los datos de la asignatura
             if (isset($_POST['enviado'])) {
-                // Formulario para que el usuario especifique el ID de la asignatura
-                // Si se envió el formulario con el ID de la asignatura
                 $asignaturaId = isset($_POST['idAsignatura']) ? $_POST['idAsignatura'] : '';
-                $info = $asignaturaController->showAsignatura($asignaturaId); 
-
-                if ($info) { // Asegurarse de que se obtuvo información de la asignatura
-                    ?>
-                    <!-- Formulario de actualización -->
-                    <form method="post" action="asignatura.php">
-                        <!-- ... campos para actualizar -->
-                        <label for="nombre_asignatura">Nuevo Nombre de la Asignatura:</label>
-                        <input type="text" name="nombre_asignatura" value="<?php echo htmlspecialchars($info["nombre_asignatura"]); ?>" required><br><br>
-
-                        <label for="creditos">Créditos:</label>
-                        <input type="number" name="creditos" value="<?php echo htmlspecialchars($info["creditos"]); ?>" required><br><br>
-
-                        <input type="hidden" name="asignatura_Id" value="<?php echo htmlspecialchars($info["idAsignatura"]); ?>">
-                        <input type="submit" name="actualizar" value="Actualizar Datos">
-                    </form>
-                    <?php
-
-                    if (isset($_POST['actualizar'])) {
-                        $nombreAsignatura = isset($_POST['nombre_asignatura']) ? $_POST['nombre_asignatura'] : '';
-                        $creditos = isset($_POST['creditos']) ? $_POST['creditos'] : '35';
-
-                        $data = array(
-                            'nombre_asignatura' => $nombreAsignatura,
-                            'creditos' => $creditos,
-                            'idAsignatura' => $info["idAsignatura"]
-                        );
-
-                        $asignaturaController->updateAsignatura($data); // Cambiar el nombre de la función
-                        $mensajeExito = "Datos de la asignatura actualizados correctamente.";
-                    }
+                $info = $asignaturaController->showAsignatura($asignaturaId);
+            
+                // Verificamos que se haya obtenido la información de la asignatura
+                if ($info) {
+                    // Agregamos $asignaturaId a la cadena de consulta y redireccionamos a la página modificarAsignatura.php
+                    $queryString = http_build_query(['asignaturaId' => $asignaturaId] + $info);
+                    header("Location: modificarAsignatura.php?" . $queryString);
+                    exit(); // Aseguramos que el script se detenga después de la redirección
                 } else {
                     echo "La asignatura con el ID especificado no fue encontrada.";
                 }
             }
             break;
+            
+            
 
         case 'destroy':
             // Lógica para eliminar una asignatura
