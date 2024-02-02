@@ -56,7 +56,13 @@ if ($infoLastMatricula==False){
             "nivel" => $nivelVerdadero,
             "carrera" => $idCarrera
         );
+        $buscarAsignaturaNivelAnterior=array(
+            "nivel" => $nivelAnterior,
+            "carrera" => $idCarrera
+        );
         $MateriasDisponibles = $asignaturaController->indexAsignaturaDisponible($buscarAsignatura);
+        $MateriasDisponiblesNivelAnterior = $asignaturaController->indexAsignaturaDisponible($buscarAsignaturaNivelAnterior);
+
 
     } else {
         // La clave no existe en el array
@@ -64,9 +70,8 @@ if ($infoLastMatricula==False){
     }
 
 }
-
-
-
+var_dump($nivelAnterior);
+var_dump($nivelVerdadero);
 
 $infoPeriodo = $carreraController->showPeriodoActivo($EstadoPeriodo);
 
@@ -137,6 +142,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     foreach ($MateriasDisponibles as $opcion4) {
                         echo '<option value="' . htmlspecialchars($opcion4['idAsignatura']) . '">' . htmlspecialchars($opcion4['nombre_asignatura']) . '</option>';
+                    }
+                    ?>
+                </select><br><br>
+                <input type="hidden" name="action" value="generarMatricula">
+                <button type="submit">Matricularse en esta materia</button>
+        </form>
+        <form method="post" action="matricularse.php">   
+            <h2>Si no has aprobado alguna de las materias del nivel anterior, matriculate aquí</h2>
+                <label for="idAsignatura">Seleccione una Asignatura: </label>
+                <select id="idAsignatura" name="idAsignatura">
+                    <?php
+                    foreach ($MateriasDisponiblesNivelAnterior as $opcion5) {
+                        echo '<option value="' . htmlspecialchars($opcion5['idAsignatura']) . '">' . htmlspecialchars($opcion5['nombre_asignatura']) . '</option>';
                     }
                     ?>
                 </select><br><br>

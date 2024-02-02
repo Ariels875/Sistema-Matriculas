@@ -246,6 +246,8 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
             }
         });
     </script>
+    <button onclick="location.href='menuDocente.php'">Volver al Menú Docente</button>
+
 
 </body>
 </html>

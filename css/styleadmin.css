@@ -1,6 +1,7 @@
 body {
     background-color: #1a1a1a;
-    color: #00ff08; /* Texto en color neon */
+    background: linear-gradient(rgba(5,7,12,0.75), rgba(5,7,12,0.75));
+    color: #ff0000; /* Texto en color neon */
     font-family: 'Arial', sans-serif;
     text-align: center;
     margin: 0;
@@ -9,16 +10,34 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
+    background-attachment: fixed;
 }
+
 
 h1 {
     color: #00fffc; /* Color cyan neon para el título */
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* Efecto de sombra para el texto */
+    background: linear-gradient(rgba(5,7,12,0.75), rgba(5,7,12,0.75));
+
 }
 
 h2, h3, h4 {
     color: #b300ff; /* Cambiado a púrpura neon */
     text-shadow: 0 0 10px rgba(179, 0, 255, 0.8); /* Efecto de sombra para el texto */
+    background: linear-gradient(rgba(5,7,12,0.75), rgba(5,7,12,0.75));
+
+}
+input {
+    background: linear-gradient(rgba(5,7,12,0.75), rgba(5,7,12,0.75));
+    color: #ff0000; /* Código de color rojo neon */
+}
+.contenedor {
+    background: linear-gradient(rgba(5, 7, 12, 0.75), rgba(5, 7, 12, 0.75));
+    padding: 10px; /* Añade espacio alrededor del contenido para mejorar la visualización */
+}
+label {
+    color: #ff0000; /* Color rojo neon para el texto */
+    text-shadow: 2px 2px 5px rgba(255, 0, 0, 0.8); /* Sombra del texto */
 }
 
 button {
@@ -35,10 +54,14 @@ button {
 
     /* Transición suave para el efecto hover */
     transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+    background: linear-gradient(rgba(5,7,12,0.75), rgba(5,7,12,0.75));
+
 }
 
 button:hover {
     background-color: #327035;
     color: #cc00ff; /* Cambiado a púrpura neon */
     text-shadow: 0 0 15px #b300ffcc; /* Cambiado a púrpura neon */
+    background: linear-gradient(rgba(5,7,12,0.75), rgba(5,7,12,0.75));
+
 }

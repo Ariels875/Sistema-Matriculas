@@ -19,6 +19,8 @@ require("../vendor/autoload.php");
 
 use App\Controladores\PeriodoController;
 $periodoController = new PeriodoController();
+$mensajeError="";
+$mensajeExito="";
 
 if (isset($_POST["periodo_id"])) {
     // Obtener el valor del input
@@ -48,10 +50,10 @@ if (isset($_POST["periodo_id"])) {
             </form>
             <?php
         } else {
-            echo "No se encontraron datos para la cédula proporcionada.";
+            $mensajeError =  "No se encontraron datos para el id proporcionado.";
         }
     } else {
-        echo "Por favor, proporcione una cédula.";
+        $mensajeError = "Por favor, proporcione un id.";
     }
 } elseif (isset($_POST["actualizar"])) {
     // Procesar el formulario de actualización
@@ -65,9 +67,9 @@ if (isset($_POST["periodo_id"])) {
     // Llamar a la función update del controlador
     if ($data["idPeriodo_Academico"]) {
         $periodoController->updatePeriodoAcademico($data);
-        echo "Datos actualizados correctamente.";
+        $mensajeExito = "Datos actualizados correctamente.";
     } else {
-        echo "Error al procesar el formulario de actualización.";
+        $mensajeError = "Error al procesar el formulario de actualización.";
     }
 }
 ?>
@@ -81,13 +83,24 @@ if (isset($_POST["periodo_id"])) {
     <title>Editar Periodo Academico</title>
 </head>
 <body>
+    <div>
+        <?php
+        if (!empty($mensajeExito)) {
+            echo '<div class="alert success">' . $mensajeExito . '</div>';
+        } elseif (!empty($mensajeError)) {
+            echo '<div class="alert error">' . $mensajeError . '</div>';
+        }
+        ?>
+    </div>
     <div id="editForm">
         <form method="post" action="xd.php">                
             <label for="periodo_id">Introduzca el id del periodo Academico:</label>
             <input type="text" name="periodo_id">
             <input type="hidden" name="action" value="xd.php">
-            <input type="submit" value="Editar">
+            <button type="submit">Editar</button>
         </form>
-    </div>
+    </div><br><br><br>
+    <button onclick="location.href='menuDocente.php'">Volver al Menú Docente</button>
+
 </body>
 </html>

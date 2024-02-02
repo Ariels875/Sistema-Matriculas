@@ -123,10 +123,11 @@ if (isset($_POST['guardar_edicion'])) {
                 if (!empty($resultados)) {
                     echo '<h2>Resultados de la búsqueda:</h2>';
                     echo '<table>';
-                    echo '<tr><th>Cédula</th><th>Nombre</th><th>Apellido</th><th>Fecha de Nacimiento</th><th>Correo</th><th>Direccion</th></tr>';
+                    echo '<tr><th>ID</th><th>Cédula</th><th>Nombre</th><th>Apellido</th><th>Fecha de Nacimiento</th><th>Correo</th><th>Direccion</th></tr>';
 
                     foreach ($resultados as $estudiante) {
                         echo '<tr>';
+                        echo '<td>' . htmlspecialchars($estudiante['idEstudiante']) . '</td>';
                         echo '<td>' . htmlspecialchars($estudiante['cedula']) . '</td>';
                         echo '<td>' . htmlspecialchars($estudiante['primer_nombre']) . '</td>';
                         echo '<td>' . htmlspecialchars($estudiante['primer_apellido']) . '</td>';

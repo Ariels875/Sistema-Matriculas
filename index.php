@@ -8,23 +8,23 @@
 </head>
 <body>
     <h1>Iniciar Sesión</h1>
+    <div>
+        <form action="./login/procesar_login.php" method="post">
+            <label for="rol">Rol:</label>
+            <select name="rol" id="rol" required>
+                <option value="estudiante">Estudiante</option>
+                <option value="docente">Docente</option>
+            </select>
 
-    <form action="./login/procesar_login.php" method="post">
-        <label for="rol">Rol:</label>
-        <select name="rol" id="rol" required>
-            <option value="estudiante">Estudiante</option>
-            <option value="docente">Docente</option>
-        </select>
+            <label for="usuario">Cedula:</label>
+            <input type="text" name="usuario" id="usuario" required>
 
-        <label for="usuario">Cedula:</label>
-        <input type="text" name="usuario" id="usuario" required>
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" name="contrasena" id="contrasena" required>
 
-        <label for="contrasena">Contraseña:</label>
-        <input type="password" name="contrasena" id="contrasena" required>
-
-        <button type="submit">Iniciar Sesión</button>
-    </form>
-
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+    </div>
     <p>No tienes una cuenta? <a href="./login/crear_cuenta.php">Crear cuenta</a></p>
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <footer>

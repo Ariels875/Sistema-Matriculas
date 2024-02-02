@@ -174,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["
         <h1>Pagos DarkZUniversity</h1>
         <h2>Una vez que hayas depositado el dinero a la cuenta del Administrador, pulsa el boton pagar para generar y verificar tu pago</h2><br>
         <h2>Tambien tendras que enviar el comprobante al correo de la universidad-> DarkZUniversity@gmail.com</h2><br><br><br><br><br><br><br><br>
-        <h3><? $mensajeNuevo ?><br> para relizar su pago debe transferir dinero a la cuenta: XXXXXXXXXXXXXX</h3><br><br><br>
+        <h3><? $mensajeNuevo ?><br> para relizar su pago debe transferir dinero a la cuenta de ahorros del banco pichincha número: 2209178560</h3><br><br><br>
         <h4>Total a pagar por esta materia: <? $monto ?> $</h4>
 
         <Button id="generarPagoBtn" type="button">Generar Pago!</Button>
